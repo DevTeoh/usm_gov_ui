@@ -1,0 +1,61 @@
+<div class="register-page">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title>Create account</mat-card-title>
+      <mat-card-subtitle>Must be 18+ to register</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @if (success()) {
+        <p class="success-text">Account created. Redirecting to login…</p>
+      } @else {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="register-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Full name</mat-label>
+            <input matInput formControlName="name" />
+            @if (form.controls.name.errors?.['required'] && form.controls.name.touched) {
+              <mat-error>Name is required</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" />
+            @if (form.controls.email.errors?.['email'] && form.controls.email.touched) {
+              <mat-error>Invalid email</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>IC number</mat-label>
+            <input matInput formControlName="icNumber" type="text" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Date of birth</mat-label>
+            <input matInput formControlName="dateOfBirth" type="date" />
+            @if (!isEligible() && form.controls.dateOfBirth.touched) {
+              <mat-hint>You must be at least 18 years old.</mat-hint>
+            }
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password" />
+            @if (form.controls.password.errors?.['minlength'] && form.controls.password.touched) {
+              <mat-error>At least 6 characters</mat-error>
+            }
+          </mat-form-field>
+          @if (error(); as err) {
+            <p class="error-text">{{ err }}</p>
+          }
+          <button mat-flat-button color="primary" type="submit" [disabled]="loading() || !isEligible()" class="full-width">
+            @if (loading()) {
+              <mat-spinner diameter="24"></mat-spinner>
+            } @else {
+              Register
+            }
+          </button>
+        </form>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-button routerLink="/auth/login">Already have an account? Log in</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

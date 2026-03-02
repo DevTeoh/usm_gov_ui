@@ -1,0 +1,28 @@
+<div class="complaint-submit">
+  <h1 class="h4 mb-3">Submit a complaint</h1>
+  <mat-card>
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="complaint-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea matInput formControlName="description" rows="4"></textarea>
+        </mat-form-field>
+        @if (error(); as err) {
+          <p class="error-text">{{ err }}</p>
+        }
+        <div class="d-flex gap-2">
+          <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+            Submit
+          </button>
+          <button mat-button type="button" (click)="cancel()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

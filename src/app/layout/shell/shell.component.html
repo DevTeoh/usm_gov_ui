@@ -1,0 +1,53 @@
+<div class="shell">
+  <header class="shell-header">
+    <mat-toolbar color="primary" class="shell-toolbar">
+      <button mat-icon-button (click)="toggleMenu()" aria-label="Toggle menu" class="d-md-none">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <a routerLink="/dashboard" class="toolbar-title">USM GOV</a>
+      <span class="spacer"></span>
+      <nav class="nav-desktop d-none d-md-flex align-items-center gap-2">
+        @for (item of visibleNavItems(); track item.route) {
+          <a mat-button [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }">
+            {{ item.label }}
+          </a>
+        }
+      </nav>
+      <div class="user-menu">
+        @if (user(); as u) {
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Account menu">
+            <mat-icon>account_circle</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <div class="px-3 py-2 text-muted small">
+              {{ u.name || u.email || u.icNumber || 'User' }}
+            </div>
+            <button mat-menu-item routerLink="/profile" (click)="closeMenu()">
+              <mat-icon>settings</mat-icon>
+              <span>My Account</span>
+            </button>
+            <button mat-menu-item (click)="logout()">
+              <mat-icon>logout</mat-icon>
+              <span>Log out</span>
+            </button>
+          </mat-menu>
+        } @else {
+          <a mat-button routerLink="/auth/login">Log in</a>
+        }
+      </div>
+    </mat-toolbar>
+    @if (menuOpen()) {
+      <nav class="nav-mobile d-md-none">
+        @for (item of visibleNavItems(); track item.route) {
+          <a class="nav-mobile-link" [routerLink]="item.route" (click)="closeMenu()">
+            {{ item.label }}
+          </a>
+        }
+      </nav>
+    }
+  </header>
+  <main class="shell-main">
+    <router-outlet />
+  </main>
+  <app-footer />
+</div>

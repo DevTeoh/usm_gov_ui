@@ -1,0 +1,59 @@
+<div class="login-page">
+  <mat-card class="login-card">
+    <mat-card-header>
+      <mat-card-title>Log in</mat-card-title>
+      <mat-card-subtitle>USM GOV — Citizen engagement</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @if (!showOtpStep()) {
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>IC number</mat-label>
+            <input matInput formControlName="icNumber" type="text" placeholder="e.g. 900101011234" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email (alternative)</mat-label>
+            <input matInput formControlName="email" type="email" />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input matInput formControlName="password" type="password" />
+            @if (form.controls.password.errors?.['required'] && form.controls.password.touched) {
+              <mat-error>Password is required</mat-error>
+            }
+          </mat-form-field>
+          @if (error(); as err) {
+            <p class="error-text">{{ err }}</p>
+          }
+          <button mat-flat-button color="primary" type="submit" [disabled]="loading()" class="full-width">
+            @if (loading()) {
+              <mat-spinner diameter="24"></mat-spinner>
+            } @else {
+              Log in
+            }
+          </button>
+        </form>
+      } @else {
+        <form [formGroup]="otpForm" (ngSubmit)="onOtpSubmit()" class="login-form">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Verification code (OTP)</mat-label>
+            <input matInput formControlName="otp" type="text" inputmode="numeric" maxlength="6" />
+          </mat-form-field>
+          @if (error(); as err) {
+            <p class="error-text">{{ err }}</p>
+          }
+          <button mat-flat-button color="primary" type="submit" [disabled]="loading()" class="full-width">
+            @if (loading()) {
+              <mat-spinner diameter="24"></mat-spinner>
+            } @else {
+              Verify
+            }
+          </button>
+        </form>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-button routerLink="/auth/register">Create account</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

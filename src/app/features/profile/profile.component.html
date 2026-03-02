@@ -1,0 +1,30 @@
+<div class="profile-page">
+  <h1 class="h4 mb-3">My account</h1>
+  <mat-card class="mb-3">
+    <mat-card-header>
+      <mat-card-title>Profile</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form" class="profile-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email" />
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-slide-toggle [checked]="darkMode()" (change)="onDarkModeChange($event.checked)">
+        Dark theme
+      </mat-slide-toggle>
+    </mat-card-content>
+  </mat-card>
+</div>

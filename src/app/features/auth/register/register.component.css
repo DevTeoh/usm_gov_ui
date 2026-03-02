@@ -1,0 +1,33 @@
+.register-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  padding: 1rem;
+}
+
+.register-card {
+  max-width: 400px;
+  width: 100%;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.error-text {
+  color: var(--mat-sys-error, #b00020);
+  font-size: 0.875rem;
+  margin: 0.25rem 0 0;
+}
+
+.success-text {
+  color: var(--mat-sys-primary, #1976d2);
+  margin: 0;
+}

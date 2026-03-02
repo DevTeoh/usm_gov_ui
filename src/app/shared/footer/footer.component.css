@@ -1,0 +1,13 @@
+.app-footer {
+  margin-top: auto;
+  border-top: 1px solid var(--mat-sys-outline-variant, #e0e0e0);
+  min-height: 52px;
+}
+
+.footer-link {
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  text-decoration: underline;
+}

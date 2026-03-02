@@ -1,0 +1,14 @@
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.profile-page h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
