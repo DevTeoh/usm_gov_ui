@@ -1,6 +1,6 @@
-# UsmGovUi
+# USM GOV UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Angular frontend for the USM Government Citizen Engagement App. This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
 
 ## Development server
 
