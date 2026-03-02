@@ -1,8 +1,9 @@
-.projects-list h1 {
+.announcements h1 {
   font-size: 1.5rem;
   font-weight: 600;
 }
 
-.project-title {
+.announcement-title {
   word-break: break-word;
 }
+

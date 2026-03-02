@@ -1,0 +1,8 @@
+.announcement-detail .title {
+  word-break: break-word;
+}
+
+.announcement-detail .content {
+  white-space: pre-wrap;
+}
+

@@ -1,0 +1,8 @@
+.parliamentarian-detail .name {
+  word-break: break-word;
+}
+
+.vote {
+  padding: 0.25rem 0;
+}
+

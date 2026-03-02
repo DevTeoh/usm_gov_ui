@@ -1,0 +1,51 @@
+<div class="announcements">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h1 class="m-0">Announcements</h1>
+    <button mat-stroked-button color="primary" type="button" (click)="refresh()">
+      Refresh
+    </button>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content class="d-flex align-items-center gap-2 text-muted">
+        <mat-spinner diameter="20"></mat-spinner>
+        Loading announcements…
+      </mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card>
+      <mat-card-content class="text-danger">{{ err }}</mat-card-content>
+    </mat-card>
+  } @else if (announcements().length === 0) {
+    <mat-card>
+      <mat-card-content class="text-muted">No announcements yet.</mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="d-grid gap-3">
+      @for (a of announcements(); track a.id) {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="announcement-title">{{ a.title }}</mat-card-title>
+            @if (a.createdAt) {
+              <mat-card-subtitle>
+                {{ a.createdAt | date: 'mediumDate' }}
+              </mat-card-subtitle>
+            }
+          </mat-card-header>
+          <mat-card-content>
+            @if (a.summary) {
+              <p class="mb-0">{{ a.summary }}</p>
+            } @else {
+              <p class="mb-0 text-muted">Open to read.</p>
+            }
+          </mat-card-content>
+          <mat-card-actions>
+            <a mat-button [routerLink]="['/announcements', a.id]">Read</a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
+</div>
+

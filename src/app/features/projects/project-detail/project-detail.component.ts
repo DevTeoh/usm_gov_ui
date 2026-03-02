@@ -2,57 +2,60 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
-  computed,
   inject,
   signal,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../../core/services/auth.service';
+import { map, switchMap } from 'rxjs/operators';
 import { ProjectsService } from '../../../core/services/projects.service';
-import type { ProjectSummary } from '../../../core/models/project.model';
+import type { ProjectDetail } from '../../../core/models/project.model';
 
 @Component({
-  selector: 'app-projects-list',
+  selector: 'app-project-detail',
   standalone: true,
   imports: [
+    DatePipe,
     RouterLink,
     MatCardModule,
     MatButtonModule,
+    MatDividerModule,
     MatProgressSpinnerModule,
   ],
-  templateUrl: './projects-list.component.html',
-  styleUrl: './projects-list.component.css',
+  templateUrl: './project-detail.component.html',
+  styleUrl: './project-detail.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProjectsListComponent {
-  private readonly auth = inject(AuthService);
+export class ProjectDetailComponent {
+  private readonly route = inject(ActivatedRoute);
   private readonly projectsService = inject(ProjectsService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
-  readonly projects = signal<readonly ProjectSummary[]>([]);
-
-  readonly constituencyId = computed(() => this.auth.constituencyId());
+  readonly project = signal<ProjectDetail | null>(null);
 
   constructor() {
-    this.refresh();
-  }
-
-  refresh(): void {
-    this.loading.set(true);
-    this.error.set(null);
-    this.projectsService
-      .list({ limit: 50, constituencyId: this.constituencyId() ?? undefined })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.route.paramMap
+      .pipe(
+        map((p) => p.get('id')),
+        switchMap((id) => {
+          if (!id) throw new Error('Missing project id.');
+          this.loading.set(true);
+          this.error.set(null);
+          return this.projectsService.getById(id);
+        }),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
-        next: (list) => {
-          this.projects.set(list ?? []);
+        next: (detail) => {
+          this.project.set(detail);
           this.loading.set(false);
         },
         error: (err: unknown) => {
@@ -60,9 +63,12 @@ export class ProjectsListComponent {
           const message =
             err instanceof HttpErrorResponse
               ? (err.error as { message?: string } | null)?.message
-              : undefined;
-          this.error.set(message ?? 'Failed to load projects.');
+              : err instanceof Error
+                ? err.message
+                : undefined;
+          this.error.set(message ?? 'Failed to load project.');
         },
       });
   }
 }
+

@@ -1,8 +1,47 @@
 <div class="parliamentarians-list">
-  <h1 class="h4 mb-3">Parliamentarians</h1>
-  <mat-card>
-    <mat-card-content>
-      <p class="text-muted mb-0">MPs for your constituency will appear here with profile, vote history, projects and contact.</p>
-    </mat-card-content>
-  </mat-card>
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h1 class="h4 m-0">Parliamentarians</h1>
+    <button mat-stroked-button color="primary" type="button" (click)="refresh()">
+      Refresh
+    </button>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content class="d-flex align-items-center gap-2 text-muted">
+        <mat-spinner diameter="20"></mat-spinner>
+        Loading MPs…
+      </mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card>
+      <mat-card-content class="text-danger">{{ err }}</mat-card-content>
+    </mat-card>
+  } @else if (mps().length === 0) {
+    <mat-card>
+      <mat-card-content class="text-muted">
+        No parliamentarians found for your constituency.
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="d-grid gap-3">
+      @for (mp of mps(); track mp.id) {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="mp-name">{{ mp.name }}</mat-card-title>
+            <mat-card-subtitle>
+              @if (mp.party) {
+                {{ mp.party }}
+              } @else {
+                <span class="text-muted">Party unknown</span>
+              }
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-actions>
+            <a mat-button [routerLink]="['/parliamentarians', mp.id]">View profile</a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
 </div>

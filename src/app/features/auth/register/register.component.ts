@@ -76,7 +76,12 @@ export class RegisterComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.message || 'Registration failed. Please try again.');
+        const msg =
+          err?.error?.message ??
+          err?.error?.error ??
+          (err?.status === 0 ? 'Cannot reach server. Is the API running?' : null) ??
+          'Registration failed. Please try again.';
+        this.error.set(msg);
       },
     });
   }

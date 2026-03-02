@@ -1,0 +1,135 @@
+<div class="project-detail">
+  <div class="mb-3">
+    <a mat-button routerLink="/projects">← Back</a>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content class="d-flex align-items-center gap-2 text-muted">
+        <mat-spinner diameter="20"></mat-spinner>
+        Loading project…
+      </mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card>
+      <mat-card-content class="text-danger">{{ err }}</mat-card-content>
+    </mat-card>
+  } @else if (project(); as p) {
+    <mat-card class="mb-3">
+      <mat-card-header>
+        <mat-card-title class="title">{{ p.name }}</mat-card-title>
+        <mat-card-subtitle>
+          <span class="text-muted">Status:</span> {{ p.status ?? 'UNKNOWN' }}
+          @if (p.progressPercent != null) {
+            <span class="text-muted ms-2">Progress:</span> {{ p.progressPercent }}%
+          }
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        @if (p.description) {
+          <p class="mb-0 content">{{ p.description }}</p>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <div class="row g-3">
+      <div class="col-12 col-lg-6">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Timeline</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="text-muted small mb-2">
+              @if (p.constructionStartedAt) {
+                <div>Started: <strong>{{ p.constructionStartedAt | date: 'mediumDate' }}</strong></div>
+              }
+              @if (p.estimatedCompletionAt) {
+                <div>Estimated completion: <strong>{{ p.estimatedCompletionAt | date: 'mediumDate' }}</strong></div>
+              }
+            </div>
+
+            @if (p.milestones?.length) {
+              <div class="d-grid gap-2">
+                @for (m of p.milestones; track m.id ?? m.name) {
+                  <div class="milestone">
+                    <div class="fw-semibold">{{ m.name }}</div>
+                    <div class="text-muted small">
+                      @if (m.date) { <span>{{ m.date | date: 'mediumDate' }}</span> }
+                      @if (m.status) { <span class="ms-2">({{ m.status }})</span> }
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="text-muted mb-0">No milestones provided.</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Budget & contractor</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="d-grid gap-2">
+              <div>
+                <div class="text-muted small">Allocated budget</div>
+                <div class="fw-semibold">
+                  @if (p.budgetAllocated != null) {
+                    {{ p.budgetCurrency ?? 'MYR' }} {{ p.budgetAllocated }}
+                  } @else {
+                    —
+                  }
+                </div>
+              </div>
+              <div>
+                <div class="text-muted small">Funding source</div>
+                <div class="fw-semibold">{{ p.fundingSource ?? '—' }}</div>
+              </div>
+
+              <mat-divider></mat-divider>
+
+              <div>
+                <div class="text-muted small">Contractor</div>
+                <div class="fw-semibold">{{ p.contractor?.name ?? '—' }}</div>
+                @if (p.contractor?.contactEmail) {
+                  <div class="text-muted small">{{ p.contractor?.contactEmail }}</div>
+                }
+                @if (p.contractor?.contactPhone) {
+                  <div class="text-muted small">{{ p.contractor?.contactPhone }}</div>
+                }
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-12">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Updates</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (p.updates?.length) {
+              <div class="d-grid gap-3">
+                @for (u of p.updates; track u.id ?? u.text) {
+                  <div class="update">
+                    <div class="text-muted small">
+                      @if (u.date) { {{ u.date | date: 'medium' }} }
+                    </div>
+                    <div class="content">{{ u.text }}</div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="text-muted mb-0">No updates yet.</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+</div>
+

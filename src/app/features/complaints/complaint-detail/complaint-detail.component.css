@@ -1,0 +1,18 @@
+.complaint-detail .title {
+  word-break: break-word;
+}
+
+.complaint-detail .content {
+  white-space: pre-wrap;
+}
+
+.photo-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.5rem;
+  text-decoration: none;
+}
+

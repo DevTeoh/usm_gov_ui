@@ -68,7 +68,13 @@ export class LoginComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.message || 'Login failed. Please try again.');
+        const msg =
+          err?.error?.message ||
+          (err?.status === 0
+            ? 'Cannot reach server. Is the API running at ' + (err?.url ?? 'localhost:8080') + '?'
+            : err?.message) ||
+          'Login failed. Please try again.';
+        this.error.set(msg);
       },
     });
   }
@@ -82,7 +88,11 @@ export class LoginComponent {
       next: () => this.router.navigate(['/dashboard']),
       error: (err) => {
         this.loading.set(false);
-        this.error.set(err?.error?.message || 'Invalid OTP.');
+        const msg =
+          err?.error?.message ||
+          (err?.status === 0 ? 'Cannot reach server. Is the API running?' : err?.message) ||
+          'Invalid OTP.';
+        this.error.set(msg);
       },
     });
   }

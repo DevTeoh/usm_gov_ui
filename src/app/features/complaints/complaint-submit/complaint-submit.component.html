@@ -11,6 +11,37 @@
           <mat-label>Description</mat-label>
           <textarea matInput formControlName="description" rows="4"></textarea>
         </mat-form-field>
+
+        <div class="mb-2">
+          <label class="form-label mb-1">Photos (optional)</label>
+          <input
+            class="form-control"
+            type="file"
+            accept="image/*"
+            multiple
+            (change)="onFilesSelected($event)"
+          />
+          @if (selectedImages().length) {
+            <div class="text-muted small mt-1">
+              Selected: <strong>{{ selectedImages().length }}</strong>
+              <button mat-button type="button" (click)="clearFiles()">Clear</button>
+            </div>
+          }
+        </div>
+
+        <div class="mb-2">
+          <label class="form-label mb-1">Location (optional)</label>
+          <div class="d-flex flex-wrap gap-2 align-items-center">
+            <button mat-stroked-button type="button" (click)="useMyLocation()" [disabled]="locationLoading()">
+              @if (locationLoading()) { Getting location… } @else { Use my location }
+            </button>
+            @if (location(); as loc) {
+              <span class="text-muted small">Lat {{ loc.lat }}, Lng {{ loc.lng }}</span>
+              <button mat-button type="button" (click)="clearLocation()">Remove</button>
+            }
+          </div>
+        </div>
+
         @if (error(); as err) {
           <p class="error-text">{{ err }}</p>
         }

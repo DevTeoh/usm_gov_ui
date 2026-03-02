@@ -6,32 +6,39 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AnnouncementsService } from '../../../core/services/announcements.service';
 import { AuthService } from '../../../core/services/auth.service';
-import { ParliamentariansService } from '../../../core/services/parliamentarians.service';
-import type { ParliamentarianSummary } from '../../../core/models/parliamentarian.model';
+import type { AnnouncementSummary } from '../../../core/models/announcement.model';
 
 @Component({
-  selector: 'app-parliamentarians-list',
+  selector: 'app-announcements-list',
   standalone: true,
-  imports: [RouterLink, MatCardModule, MatButtonModule, MatProgressSpinnerModule],
-  templateUrl: './parliamentarians-list.component.html',
-  styleUrl: './parliamentarians-list.component.css',
+  imports: [
+    DatePipe,
+    RouterLink,
+    MatCardModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
+  templateUrl: './announcements-list.component.html',
+  styleUrl: './announcements-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ParliamentariansListComponent {
+export class AnnouncementsListComponent {
+  private readonly announcementsService = inject(AnnouncementsService);
   private readonly auth = inject(AuthService);
-  private readonly parliamentariansService = inject(ParliamentariansService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
-  readonly mps = signal<readonly ParliamentarianSummary[]>([]);
+  readonly announcements = signal<readonly AnnouncementSummary[]>([]);
 
   readonly constituencyId = computed(() => this.auth.constituencyId());
 
@@ -42,19 +49,13 @@ export class ParliamentariansListComponent {
   refresh(): void {
     this.loading.set(true);
     this.error.set(null);
-    const constituencyId = this.constituencyId();
-    if (!constituencyId) {
-      this.loading.set(false);
-      this.mps.set([]);
-      this.error.set('Missing constituency id for your account. Please log out and log in again.');
-      return;
-    }
-    this.parliamentariansService
-      .list({ limit: 50, constituencyId })
+
+    this.announcementsService
+      .list({ limit: 20, constituencyId: this.constituencyId() ?? undefined })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (list) => {
-          this.mps.set(list ?? []);
+          this.announcements.set(list ?? []);
           this.loading.set(false);
         },
         error: (err: unknown) => {
@@ -63,8 +64,9 @@ export class ParliamentariansListComponent {
             err instanceof HttpErrorResponse
               ? (err.error as { message?: string } | null)?.message
               : undefined;
-          this.error.set(message ?? 'Failed to load parliamentarians.');
+          this.error.set(message ?? 'Failed to load announcements.');
         },
       });
   }
 }
+
