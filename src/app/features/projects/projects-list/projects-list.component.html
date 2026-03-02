@@ -1,8 +1,46 @@
 <div class="projects-list">
-  <h1 class="h4 mb-3">Projects</h1>
-  <mat-card>
-    <mat-card-content>
-      <p class="text-muted mb-0">Local projects with timeline, budget, contractor and updates will appear here.</p>
-    </mat-card-content>
-  </mat-card>
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+    <h1 class="h4 m-0">Projects</h1>
+    <button mat-stroked-button color="primary" type="button" (click)="refresh()">
+      Refresh
+    </button>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content class="d-flex align-items-center gap-2 text-muted">
+        <mat-spinner diameter="20"></mat-spinner>
+        Loading projects…
+      </mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card>
+      <mat-card-content class="text-danger">{{ err }}</mat-card-content>
+    </mat-card>
+  } @else if (projects().length === 0) {
+    <mat-card>
+      <mat-card-content class="text-muted">
+        No projects yet.
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <div class="d-grid gap-3">
+      @for (p of projects(); track p.id) {
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title class="project-title">{{ p.name }}</mat-card-title>
+            <mat-card-subtitle>
+              <span class="text-muted">Status:</span> {{ p.status ?? 'UNKNOWN' }}
+              @if (p.progressPercent != null) {
+                <span class="text-muted ms-2">Progress:</span> {{ p.progressPercent }}%
+              }
+            </mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-actions>
+            <a mat-button [routerLink]="['/projects', p.id]">View details</a>
+          </mat-card-actions>
+        </mat-card>
+      }
+    </div>
+  }
 </div>

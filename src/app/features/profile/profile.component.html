@@ -22,9 +22,36 @@
       <mat-card-title>Settings</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <mat-slide-toggle [checked]="darkMode()" (change)="onDarkModeChange($event.checked)">
-        Dark theme
-      </mat-slide-toggle>
+      <form [formGroup]="form" class="settings-form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Theme</mat-label>
+          <mat-select formControlName="theme" (selectionChange)="onThemeChange($event.value)">
+            @for (o of themeOptions; track o.value) {
+              <mat-option [value]="o.value">{{ o.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Language</mat-label>
+          <mat-select formControlName="language" (selectionChange)="onLanguageChange($event.value)">
+            @for (o of languageOptions; track o.value) {
+              <mat-option [value]="o.value">{{ o.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        @if (error(); as err) {
+          <p class="error-text">{{ err }}</p>
+        }
+        @if (saved()) {
+          <p class="success-text">Saved.</p>
+        }
+
+        <button mat-flat-button color="primary" type="button" (click)="savePreferences()" [disabled]="saving()">
+          @if (saving()) { <mat-spinner diameter="20"></mat-spinner> } @else { Save settings }
+        </button>
+      </form>
     </mat-card-content>
   </mat-card>
 </div>

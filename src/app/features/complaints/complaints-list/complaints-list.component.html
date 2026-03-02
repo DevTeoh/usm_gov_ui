@@ -3,9 +3,31 @@
     <h1 class="h4 mb-0">Your complaints</h1>
     <a mat-flat-button color="primary" routerLink="/complaints/new">Submit complaint</a>
   </div>
-  <mat-card>
-    <mat-card-content>
-      <p class="text-muted mb-0">Your submitted complaints will appear here. Use the button above to submit a new one.</p>
-    </mat-card-content>
-  </mat-card>
+  @if (error(); as err) {
+    <mat-card>
+      <mat-card-content>
+        <p class="text-danger mb-0">{{ err }}</p>
+      </mat-card-content>
+    </mat-card>
+  } @else if (loading()) {
+    <p class="text-muted">Loading…</p>
+  } @else if (complaints().length === 0) {
+    <mat-card>
+      <mat-card-content>
+        <p class="text-muted mb-0">No complaints yet. Use the button above to submit one.</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    @for (c of complaints(); track c.id) {
+      <mat-card class="mb-2 complaint-card" [routerLink]="['/complaints', c.id]" role="button" tabindex="0">
+        <mat-card-content>
+          <strong>{{ c.title }}</strong>
+          <span class="badge ms-2">{{ c.status }}</span>
+          @if (c.createdAt) {
+            <span class="text-muted small ms-2">{{ c.createdAt | date:'short' }}</span>
+          }
+        </mat-card-content>
+      </mat-card>
+    }
+  }
 </div>

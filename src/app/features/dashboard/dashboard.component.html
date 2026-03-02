@@ -1,6 +1,24 @@
 <div class="dashboard">
   <h1 class="mb-3">Dashboard</h1>
-  <p class="text-muted mb-4">Content for your constituency. Map, MPs, announcements, projects and complaint status will load here.</p>
+  <p class="text-muted mb-4">
+    Content for your constituency. Map, MPs, announcements, projects and complaint status will load here.
+  </p>
+
+  @if (loading()) {
+    <mat-card class="mb-3">
+      <mat-card-content class="text-muted">Loading dashboard…</mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card class="mb-3">
+      <mat-card-content>
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+          <span class="text-danger">{{ err }}</span>
+          <button mat-stroked-button color="primary" type="button" (click)="refresh()">Retry</button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+
   <div class="row g-3">
     <div class="col-12 col-md-6 col-lg-4">
       <mat-card>
@@ -8,7 +26,8 @@
           <mat-card-title>Complaints</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <p>View and submit complaints for your area.</p>
+          <p class="mb-2">View and submit complaints for your area.</p>
+          <div class="text-muted small">Total: <strong>{{ complaintTotal() }}</strong></div>
         </mat-card-content>
         <mat-card-actions>
           <a mat-button routerLink="/complaints">Go to complaints</a>
@@ -21,7 +40,8 @@
           <mat-card-title>Parliamentarians</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <p>Your area's MPs and contact info.</p>
+          <p class="mb-2">Your area's MPs and contact info.</p>
+          <div class="text-muted small">MPs: <strong>{{ mpTotal() }}</strong></div>
         </mat-card-content>
         <mat-card-actions>
           <a mat-button routerLink="/parliamentarians">View MPs</a>
@@ -34,10 +54,26 @@
           <mat-card-title>Projects</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <p>Local projects and progress.</p>
+          <p class="mb-2">Local projects and progress.</p>
+          <div class="text-muted small">Total: <strong>{{ projectTotal() }}</strong></div>
         </mat-card-content>
         <mat-card-actions>
           <a mat-button routerLink="/projects">View projects</a>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+
+    <div class="col-12 col-md-6 col-lg-4">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>Announcements</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="mb-2">Recent announcements for your constituency.</p>
+          <div class="text-muted small">Recent: <strong>{{ announcementRecent() }}</strong></div>
+        </mat-card-content>
+        <mat-card-actions>
+          <a mat-button routerLink="/announcements">View announcements</a>
         </mat-card-actions>
       </mat-card>
     </div>

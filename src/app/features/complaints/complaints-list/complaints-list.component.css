@@ -2,3 +2,11 @@
   font-size: 1.5rem;
   font-weight: 600;
 }
+
+.complaint-card {
+  cursor: pointer;
+}
+
+.complaint-card:hover {
+  outline: 2px solid rgba(25, 118, 210, 0.25);
+}

@@ -1,0 +1,13 @@
+.project-detail .title {
+  word-break: break-word;
+}
+
+.project-detail .content {
+  white-space: pre-wrap;
+}
+
+.milestone,
+.update {
+  padding: 0.25rem 0;
+}
+

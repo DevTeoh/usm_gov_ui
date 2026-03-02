@@ -1,0 +1,37 @@
+<div class="announcement-detail">
+  <div class="mb-3">
+    <a mat-button routerLink="/announcements">← Back</a>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content class="d-flex align-items-center gap-2 text-muted">
+        <mat-spinner diameter="20"></mat-spinner>
+        Loading announcement…
+      </mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card>
+      <mat-card-content class="text-danger">{{ err }}</mat-card-content>
+    </mat-card>
+  } @else if (announcement(); as a) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title class="title">{{ a.title }}</mat-card-title>
+        @if (a.createdAt) {
+          <mat-card-subtitle>{{ a.createdAt | date: 'medium' }}</mat-card-subtitle>
+        }
+      </mat-card-header>
+      <mat-card-content>
+        @if (a.content) {
+          <p class="mb-0 content">{{ a.content }}</p>
+        } @else if (a.summary) {
+          <p class="mb-0 content">{{ a.summary }}</p>
+        } @else {
+          <p class="mb-0 text-muted">No content.</p>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
+

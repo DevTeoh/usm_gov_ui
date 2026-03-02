@@ -1,0 +1,100 @@
+<div class="parliamentarian-detail">
+  <div class="mb-3">
+    <a mat-button routerLink="/parliamentarians">← Back</a>
+  </div>
+
+  @if (loading()) {
+    <mat-card>
+      <mat-card-content class="d-flex align-items-center gap-2 text-muted">
+        <mat-spinner diameter="20"></mat-spinner>
+        Loading profile…
+      </mat-card-content>
+    </mat-card>
+  } @else if (error(); as err) {
+    <mat-card>
+      <mat-card-content class="text-danger">{{ err }}</mat-card-content>
+    </mat-card>
+  } @else if (mp(); as p) {
+    <mat-card class="mb-3">
+      <mat-card-header>
+        <mat-card-title class="name">{{ p.name }}</mat-card-title>
+        <mat-card-subtitle>
+          @if (p.party) { {{ p.party }} } @else { <span class="text-muted">Party unknown</span> }
+          @if (p.term) { <span class="ms-2 text-muted">Term:</span> {{ p.term }} }
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="d-grid gap-2">
+          @if (p.email) {
+            <div>
+              <div class="text-muted small">Email</div>
+              <div class="fw-semibold">{{ p.email }}</div>
+            </div>
+          }
+
+          @if (p.socialLinks?.length) {
+            <div>
+              <div class="text-muted small mb-1">Social</div>
+              <div class="d-flex flex-wrap gap-2">
+                @for (s of p.socialLinks; track s.url) {
+                  <a mat-stroked-button [href]="s.url" target="_blank" rel="noopener noreferrer">
+                    {{ s.label }}
+                  </a>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <div class="row g-3">
+      <div class="col-12 col-lg-6">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Achievements</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (p.achievements?.length) {
+              <ul class="mb-0">
+                @for (a of p.achievements; track a) {
+                  <li>{{ a }}</li>
+                }
+              </ul>
+            } @else {
+              <p class="text-muted mb-0">No achievements provided.</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Vote history</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            @if (votes().length) {
+              <div class="d-grid gap-2">
+                @for (v of votes(); track v.id ?? (v.bill ?? v.title ?? v.vote)) {
+                  <div class="vote">
+                    <div class="fw-semibold">
+                      {{ v.title ?? v.bill ?? 'Vote record' }}
+                    </div>
+                    <div class="text-muted small">
+                      {{ v.vote }}
+                      @if (v.date) { <span class="ms-2">{{ v.date | date: 'mediumDate' }}</span> }
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <p class="text-muted mb-0">No votes available.</p>
+            }
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  }
+</div>
+
